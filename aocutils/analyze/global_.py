@@ -83,22 +83,52 @@ class GlobalProperties(object):
         """Inertia matrix"""
         return self.system.MatrixOfInertia(), self.system.MomentOfInertia()
 
+    # @property
+    # def area(self):
+    #     r"""Area of the surface"""
+    #     if self.topo_type not in GlobalProperties.surfacic_types:
+    #         msg = "area is only defined for linear surfacic types"
+    #         logger.error(msg)
+    #         raise aocutils.exceptions.WrongTopologicalType(msg)
+    #     return self._mass()
+    #
+    # @property
+    # def volume(self):
+    #     r"""Volume"""
+    #     if self.topo_type not in GlobalProperties.volumic_types:
+    #         msg = "volume is only defined for linear volumic types"
+    #         logger.error(msg)
+    #         raise aocutils.exceptions.WrongTopologicalType(msg)
+    #     return self._mass()
+
+    # New handling of area and volume to properly handle compound
+
     @property
     def area(self):
         r"""Area of the surface"""
         if self.topo_type not in GlobalProperties.surfacic_types:
-            msg = "area is only defined for linear surfacic types"
-            logger.error(msg)
-            raise aocutils.exceptions.WrongTopologicalType(msg)
+            if self.topo_type != "compound":
+                msg = "area is only defined for linear surfacic types"
+                logger.error(msg)
+                raise aocutils.exceptions.WrongTopologicalType(msg)
+            else:
+                import aocutils.topology
+                faces = aocutils.topology.Topo(self.shape).faces
+                return sum([GlobalProperties(face).area for face in faces])
         return self._mass()
 
     @property
     def volume(self):
         r"""Volume"""
         if self.topo_type not in GlobalProperties.volumic_types:
-            msg = "volume is only defined for linear volumic types"
-            logger.error(msg)
-            raise aocutils.exceptions.WrongTopologicalType(msg)
+            if self.topo_type != "compound":
+                msg = "volume is only defined for linear volumic types"
+                logger.error(msg)
+                raise aocutils.exceptions.WrongTopologicalType(msg)
+            else:
+                import aocutils.topology
+                solids = aocutils.topology.Topo(self.shape).solids
+                return sum([GlobalProperties(solid).volume for solid in solids])
         return self._mass()
 
     def _mass(self):
