@@ -66,4 +66,3 @@ gray_1 = color(0, 0, 0)
 gray_2 = color(0.5, 0.5, 0.5)
 gray_3 = color(1, 1, 1)
 gray_color_sequence = [gray_1, gray_2, gray_3]
-

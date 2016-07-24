@@ -15,6 +15,7 @@ import aocutils.brep.edge_make
 import aocutils.brep.vertex_make
 import aocutils.brep.wire_make
 import aocutils.display.defaults
+import aocutils.display.color
 
 backend = aocutils.display.defaults.backend
 display, start_display, add_menu, add_function_to_menu = OCC.Display.SimpleGui.init_display(backend)
@@ -67,9 +68,9 @@ def n_sided_patch():
 
     display.DisplayShape(edges)
     display.DisplayShape(verts)
-    display.DisplayShape(f1, color=aocutils.display.defaults.fp_dark_blue, update=True)
+    display.DisplayShape(f1, color=aocutils.display.color.fp_dark_blue, update=True)
     print(display.Viewer.__class__)  # OCC.V3d.Handle_V3d_Viewer
-    display.View.SetBackgroundColor(aocutils.display.defaults.gray)
+    display.View.SetBackgroundColor(aocutils.display.color.gray)
 
 
 if __name__ == '__main__':
