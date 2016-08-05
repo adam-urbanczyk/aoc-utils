@@ -10,6 +10,7 @@ import wx.lib.buttons
 import wx.lib.colourselect
 
 import OCC.Display.wxDisplay
+import OCC.Quantity
 
 import aocutils.display.color
 import aocutils.display.topology
@@ -185,6 +186,28 @@ class Wx3dViewer(wx.Panel):
         else:
             self._shapes.append(shapes)
 
+    def display_ais_shape(self, shapes, color=OCC.Quantity.Quantity_NOC_MATRABLUE, transparency=0.8):
+        r"""Display shapes using AIS and keep track of displayed shapes
+
+        Parameters
+        ----------
+        shapes : list of OCC Shapes or single OCC Shape
+        color : OCC.Quantity
+        transparency : bool
+
+        """
+        for shape in shapes:
+            ais_shp = OCC.AIS.AIS_Shape(shape)
+            ais_shp.SetTransparency(0.2)
+            ais_shp.SetColor(OCC.Quantity.Quantity_NOC_MATRABLUE)
+            ais_context = self.viewer_display.GetContext().GetObject()
+            ais_context.Display(ais_shp.GetHandle())
+        if isinstance(shapes, list):
+            for shape in shapes:
+                self._shapes.append(shape)
+        else:
+            self._shapes.append(shapes)
+
     def display_vector(self, vec, pnt, update=False):
         r"""Display a vector
 
@@ -286,7 +309,7 @@ class Wx3dViewer(wx.Panel):
         r"""Display another viewer with solid topology"""
         dialog = wx.Dialog(self, title="Topology - Solids")
         panel = Wx3dViewer(dialog, viewer_background_color=self.background_color, show_topology_menu=False)
-        for shape in self. _shapes:
+        for shape in self._shapes:
             aocutils.display.topology.solids(panel.viewer_display, shape, transparency=0.5)
         dialog.ShowModal()
 
@@ -294,7 +317,7 @@ class Wx3dViewer(wx.Panel):
         r"""Display another viewer with shells topology"""
         dialog = wx.Dialog(self, title="Topology - Shells")
         panel = Wx3dViewer(dialog, viewer_background_color=self.background_color, show_topology_menu=False)
-        for shape in self. _shapes:
+        for shape in self._shapes:
             aocutils.display.topology.shells(panel.viewer_display, shape, transparency=0.5)
         dialog.ShowModal()
 
@@ -302,7 +325,7 @@ class Wx3dViewer(wx.Panel):
         r"""Display another viewer with faces topology"""
         dialog = wx.Dialog(self, title="Topology - Faces")
         panel = Wx3dViewer(dialog, viewer_background_color=self.background_color, show_topology_menu=False)
-        for shape in self. _shapes:
+        for shape in self._shapes:
             aocutils.display.topology.faces(panel.viewer_display, shape, transparency=0.5)
         dialog.ShowModal()
 
@@ -311,7 +334,7 @@ class Wx3dViewer(wx.Panel):
         dialog = wx.Dialog(self, title="Topology - Edges")
         panel = Wx3dViewer(dialog, viewer_background_color=self.background_color, show_topology_menu=False)
 
-        for shape in self. _shapes:
+        for shape in self._shapes:
             aocutils.display.topology.edges(panel.viewer_display, shape)
         dialog.ShowModal()
 
@@ -325,7 +348,7 @@ class Wx3dViewer(wx.Panel):
         dialog = wx.Dialog(self, title="Topology - Wires")
         panel = Wx3dViewer(dialog, viewer_background_color=self.background_color, show_topology_menu=False)
         dialog.Show()  # display of wires iterates over the wires, cannot show model after displaying
-        for shape in self. _shapes:
+        for shape in self._shapes:
             aocutils.display.topology.wires(panel.viewer_display, shape)
             self.Refresh()
         # dialog.ShowModal()
