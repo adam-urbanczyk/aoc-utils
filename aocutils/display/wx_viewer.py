@@ -209,7 +209,7 @@ class Wx3dViewer(wx.Panel):
                 display_ais(shape)
                 self._shapes.append(shape)
         else:
-            display_ais(shape)
+            display_ais(shapes)
             self._shapes.append(shapes)
 
     def display_vector(self, vec, pnt, update=False):
