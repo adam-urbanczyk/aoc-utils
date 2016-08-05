@@ -11,6 +11,7 @@ import wx.lib.colourselect
 
 import OCC.Display.wxDisplay
 import OCC.Quantity
+import OCC.AIS
 
 import aocutils.display.color
 import aocutils.display.topology
@@ -196,16 +197,19 @@ class Wx3dViewer(wx.Panel):
         transparency : bool
 
         """
-        for shape in shapes:
+        def display_ais(shape):
             ais_shp = OCC.AIS.AIS_Shape(shape)
-            ais_shp.SetTransparency(0.2)
-            ais_shp.SetColor(OCC.Quantity.Quantity_NOC_MATRABLUE)
+            ais_shp.SetTransparency(transparency)
+            ais_shp.SetColor(color)
             ais_context = self.viewer_display.GetContext().GetObject()
             ais_context.Display(ais_shp.GetHandle())
+
         if isinstance(shapes, list):
             for shape in shapes:
+                display_ais(shape)
                 self._shapes.append(shape)
         else:
+            display_ais(shape)
             self._shapes.append(shapes)
 
     def display_vector(self, vec, pnt, update=False):
