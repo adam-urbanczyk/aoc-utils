@@ -150,7 +150,7 @@ class Wx3dViewer(wx.Panel):
 
     # Display methods
 
-    def display_shape(self, shapes, material=None, texture=None, color=None, transparency=None, update=False):
+    def display_shape(self, shapes, material=None, texture=None, color=None, transparency=None, update=False, topology=True):
         r"""DisplayShape and keep track of displayed shapes
 
         Parameters
@@ -164,13 +164,14 @@ class Wx3dViewer(wx.Panel):
         """
         self.viewer_display.DisplayShape(shapes, material=material, texture=texture, color=color,
                                          transparency=transparency, update=update)
-        if isinstance(shapes, list):
-            for shape in shapes:
-                self._shapes.append(shape)
-        else:
-            self._shapes.append(shapes)
+        if topology:
+            if isinstance(shapes, list):
+                for shape in shapes:
+                    self._shapes.append(shape)
+            else:
+                self._shapes.append(shapes)
 
-    def display_colored_shape(self, shapes, color='YELLOW', update=False):
+    def display_colored_shape(self, shapes, color='YELLOW', update=False, topology=True):
         r"""DisplayColoredShape and keep track of displayed shapes
 
         Parameters
@@ -181,13 +182,14 @@ class Wx3dViewer(wx.Panel):
 
         """
         self.viewer_display.DisplayColoredShape(shapes, color, update)
-        if isinstance(shapes, list):
-            for shape in shapes:
-                self._shapes.append(shape)
-        else:
-            self._shapes.append(shapes)
+        if topology:
+            if isinstance(shapes, list):
+                for shape in shapes:
+                    self._shapes.append(shape)
+            else:
+                self._shapes.append(shapes)
 
-    def display_ais_shape(self, shapes, color=OCC.Quantity.Quantity_NOC_MATRABLUE, transparency=0.8):
+    def display_ais_shape(self, shapes, color=OCC.Quantity.Quantity_NOC_MATRABLUE, transparency=0.8, topology=True):
         r"""Display shapes using AIS and keep track of displayed shapes
 
         Parameters
@@ -203,14 +205,15 @@ class Wx3dViewer(wx.Panel):
             ais_shp.SetColor(color)
             ais_context = self.viewer_display.GetContext().GetObject()
             ais_context.Display(ais_shp.GetHandle())
-
         if isinstance(shapes, list):
             for shape in shapes:
                 display_ais(shape)
-                self._shapes.append(shape)
+                if topology:
+                    shape._shapes.append(shape)
         else:
             display_ais(shapes)
-            self._shapes.append(shapes)
+            if topology:
+                self._shapes.append(shapes)
 
     def display_vector(self, vec, pnt, update=False):
         r"""Display a vector
