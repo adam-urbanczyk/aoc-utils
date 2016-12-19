@@ -18,7 +18,6 @@ import aocutils.brep.edge_make
 import aocutils.brep.wire_make
 import aocutils.brep.face_make
 
-
 import aocutils.analyze.bounds
 import aocutils.analyze.distance
 import aocutils.analyze.global_
@@ -59,6 +58,7 @@ tol = aocutils.tolerance.OCCUTILS_DEFAULT_TOLERANCE
 
 
 def test_bounds_box():
+    r"""Test the bounding box on a box shape"""
     # occutils.mesh.mesh(box)
     bb = aocutils.analyze.bounds.BoundingBox(box)
     assert box_dim_x <= bb.x_span < box_dim_x + 2.001 * tol
@@ -66,7 +66,41 @@ def test_bounds_box():
     assert box_dim_z <= bb.z_span < box_dim_z + 2.001 * tol
 
 
+def test_better_bounds_box():
+    r"""test BetterBoundingBox"""
+    tolerance = 0.01
+    bbb = aocutils.analyze.bounds.BetterBoundingBox(box, tol=tolerance)
+
+    assert 0 >= bbb.x_min
+    assert - bbb.x_min <= tolerance
+
+    assert box_dim_x <= bbb.x_max
+    assert bbb.x_max - box_dim_x <= tolerance
+
+    assert box_dim_y <= bbb.y_max
+    assert bbb.y_max - box_dim_y <= tolerance
+
+    assert box_dim_z <= bbb.z_max
+    assert bbb.z_max - box_dim_z <= tolerance
+
+    tolerance = 0.001
+    bbb = aocutils.analyze.bounds.BetterBoundingBox(box, tol=tolerance)
+
+    assert 0 >= bbb.x_min
+    assert - bbb.x_min <= tolerance
+
+    assert box_dim_x <= bbb.x_max
+    assert bbb.x_max - box_dim_x <= tolerance
+
+    assert box_dim_y <= bbb.y_max
+    assert bbb.y_max - box_dim_y <= tolerance
+
+    assert box_dim_z <= bbb.z_max
+    assert bbb.z_max - box_dim_z <= tolerance
+
+
 def test_bounds_sphere():
+    r"""Test the bounding box on a sphere"""
     # aocutils.mesh.mesh(box)
     bb = aocutils.analyze.bounds.BoundingBox(sphere)
     assert 2 * sphere_radius <= bb.x_span < 2 * sphere_radius + 2.001 * tol
@@ -74,7 +108,26 @@ def test_bounds_sphere():
     assert 2 * sphere_radius <= bb.z_span < 2 * sphere_radius + 2.001 * tol
 
 
+def test_better_bounds_sphere():
+    r"""Test the better bounding box on a sphere"""
+    tolerance = 0.01
+    bbb = aocutils.analyze.bounds.BetterBoundingBox(sphere, tol=tolerance)
+    assert 2 * sphere_radius <= bbb.x_span < 2 * sphere_radius + 2.001 * tol
+    assert 2 * sphere_radius <= bbb.y_span < 2 * sphere_radius + 2.001 * tol
+    assert 2 * sphere_radius <= bbb.z_span < 2 * sphere_radius + 2.001 * tol
+
+    assert bbb.x_max >= sphere_radius
+    assert bbb.x_max - sphere_radius <= tolerance
+
+    assert bbb.y_max >= sphere_radius
+    assert bbb.y_max - sphere_radius <= tolerance
+
+    assert bbb.z_max >= sphere_radius
+    assert bbb.z_max - sphere_radius <= tolerance
+
+
 def test_bounds_sphere_boundingbox_middle():
+    r"""Test the determination of the bounding box middle"""
     # occutils.mesh.mesh(box)
     bb = aocutils.analyze.bounds.BoundingBox(sphere)
     assert bb.centre.X() < tol / 10.
@@ -83,6 +136,7 @@ def test_bounds_sphere_boundingbox_middle():
 
 
 def test_minimum_distance():
+    r"""Test the minimum distance determination"""
     md = aocutils.analyze.distance.MinimumDistance(sphere, sphere_2)
     assert md.minimum_distance == 20.
     assert md.nb_solutions == 1
@@ -173,13 +227,13 @@ def test_global_properties_wire_closed():
 def test_inclusion():
     assert aocutils.analyze.inclusion.point_in_boundingbox(sphere, OCC.gp.gp_Pnt(sphere_radius - 1.,
                                                                                  sphere_radius - 1.,
-                                                                                 sphere_radius - 1.)) == True
+                                                                                 sphere_radius - 1.)) is True
 
-    assert aocutils.analyze.inclusion.point_in_solid(sphere, OCC.gp.gp_Pnt(sphere_radius - 1., 0, 0)) == True
+    assert aocutils.analyze.inclusion.point_in_solid(sphere, OCC.gp.gp_Pnt(sphere_radius - 1., 0, 0)) is True
     assert aocutils.analyze.inclusion.point_in_solid(sphere, OCC.gp.gp_Pnt(sphere_radius - 1.,
                                                                            sphere_radius - 1.,
-                                                                           sphere_radius - 1.)) == False
-    assert aocutils.analyze.inclusion.point_in_solid(sphere, OCC.gp.gp_Pnt(sphere_radius, 0, 0)) == None
+                                                                           sphere_radius - 1.)) is False
+    assert aocutils.analyze.inclusion.point_in_solid(sphere, OCC.gp.gp_Pnt(sphere_radius, 0, 0)) is None
 
     with pytest.raises(aocutils.exceptions.WrongTopologicalType):
         aocutils.analyze.inclusion.point_in_solid(edge, OCC.gp.gp_Pnt(sphere_radius, 0, 0))
@@ -191,9 +245,9 @@ def test_inclusion():
     sphere_shell = aocutils.topology.Topo(sphere, return_iter=False).shells[0]
     assert aocutils.analyze.inclusion.point_in_boundingbox(sphere_shell, OCC.gp.gp_Pnt(sphere_radius - 1.,
                                                                                        sphere_radius - 1.,
-                                                                                       sphere_radius - 1.)) == True
-    assert aocutils.analyze.inclusion.point_in_solid(sphere_shell, OCC.gp.gp_Pnt(sphere_radius - 1., 0, 0)) == True
+                                                                                       sphere_radius - 1.)) is True
+    assert aocutils.analyze.inclusion.point_in_solid(sphere_shell, OCC.gp.gp_Pnt(sphere_radius - 1., 0, 0)) is True
     assert aocutils.analyze.inclusion.point_in_solid(sphere_shell, OCC.gp.gp_Pnt(sphere_radius - 1.,
                                                                                  sphere_radius - 1.,
-                                                                                 sphere_radius - 1.)) == False
-    assert aocutils.analyze.inclusion.point_in_solid(sphere_shell, OCC.gp.gp_Pnt(sphere_radius, 0, 0)) == None
+                                                                                 sphere_radius - 1.)) is False
+    assert aocutils.analyze.inclusion.point_in_solid(sphere_shell, OCC.gp.gp_Pnt(sphere_radius, 0, 0)) is None

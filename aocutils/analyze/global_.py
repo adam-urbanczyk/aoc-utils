@@ -12,7 +12,7 @@ import OCC.BRepGProp
 import aocutils.tolerance
 import aocutils.analyze.bounds
 import aocutils.types
-import aocutils.exceptions
+from aocutils.exceptions import WrongTopologicalType
 
 import aocutils.tolerance
 
@@ -66,7 +66,7 @@ class GlobalProperties(object):
         else:
             msg = "ShapeType is not linear, surfacic or volumic"
             logger.error(msg)
-            raise aocutils.exceptions.WrongTopologicalType(msg)
+            raise WrongTopologicalType(msg)
         return self._system
 
     @property
@@ -110,7 +110,7 @@ class GlobalProperties(object):
             if self.topo_type != "compound":
                 msg = "area is only defined for linear surfacic types"
                 logger.error(msg)
-                raise aocutils.exceptions.WrongTopologicalType(msg)
+                raise WrongTopologicalType(msg)
             else:
                 import aocutils.topology
                 faces = aocutils.topology.Topo(self.shape).faces
@@ -124,7 +124,7 @@ class GlobalProperties(object):
             if self.topo_type != "compound":
                 msg = "volume is only defined for linear volumic types"
                 logger.error(msg)
-                raise aocutils.exceptions.WrongTopologicalType(msg)
+                raise WrongTopologicalType(msg)
             else:
                 import aocutils.topology
                 solids = aocutils.topology.Topo(self.shape).solids
@@ -140,5 +140,5 @@ class GlobalProperties(object):
         if self.topo_type not in GlobalProperties.linear_types:
             msg = "length is only defined for linear topological types"
             logger.error(msg)
-            raise aocutils.exceptions.WrongTopologicalType(msg)
+            raise WrongTopologicalType(msg)
         return self.system.Mass()

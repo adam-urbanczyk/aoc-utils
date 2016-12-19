@@ -63,6 +63,7 @@ def from_points(points_list):
     Parameters
     ----------
     points_list : list[OCC.gp.gp_Pnt]
+
     """
     poly = aocutils.brep.wire_make.closed_polygon(points_list)  # poly is a OCC.TopoDS.TopoDS_Wire
     return face(poly)
