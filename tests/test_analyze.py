@@ -126,6 +126,28 @@ def test_better_bounds_sphere():
     assert bbb.z_max - sphere_radius <= tolerance
 
 
+def test_better_bounds_complex_shape():
+    r"""Test BetterBoundingBox on a complex shape"""
+    import os
+    from aocxchange.step import StepImporter
+    hullshape = StepImporter(filename=os.path.join(os.path.dirname(__file__), "test_files/G10.stp")).shapes[0]
+    # From Rhinoceros bounding box
+    # min = 0.000,-82.263,-52.092    max = 990.000,82.263,102.210    in World coordinates
+    # dimensions = 990.000,164.527,154.302
+    #
+    # z max has to be replaced by 102.20984 for the test to pass
+    tolerance = 0.01
+    bbb = aocutils.analyze.bounds.BetterBoundingBox(hullshape, tol=tolerance)
+    assert -tolerance <= bbb.x_min <= 0.
+    assert 990. <= bbb.x_max <= 990. + tolerance
+
+    assert -82.263 - tolerance <= bbb.y_min <= -82.263
+    assert 82.263 <= bbb.y_max <= 82.263 + tolerance
+
+    assert -52.092 - tolerance <= bbb.z_min <= -52.092
+    assert 102.20984 <= bbb.z_max <= 102.210 + tolerance
+
+
 def test_bounds_sphere_boundingbox_middle():
     r"""Test the determination of the bounding box middle"""
     # occutils.mesh.mesh(box)
@@ -225,6 +247,7 @@ def test_global_properties_wire_closed():
 
 
 def test_inclusion():
+    r"""Test inclusion of point in bounding box and of point is solid"""
     assert aocutils.analyze.inclusion.point_in_boundingbox(sphere, OCC.gp.gp_Pnt(sphere_radius - 1.,
                                                                                  sphere_radius - 1.,
                                                                                  sphere_radius - 1.)) is True
