@@ -39,7 +39,10 @@ def common(shape_1, shape_2):
               7: '- Can not allocate memory for the Builder'}
 
     if algo_common.ErrorStatus() != 0:
-        msg = _error[algo_common.ErrorStatus()]
+        try:
+            msg = _error[algo_common.ErrorStatus()]
+        except KeyError:
+            msg = "Unknown error : %s" % str(algo_common.ErrorStatus())
         logger.error(msg)
         raise aocutils.exceptions.BooleanCommonException()
     else:
