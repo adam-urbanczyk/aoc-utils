@@ -16,8 +16,8 @@ from aocutils.brep.face_make import from_points
 import aocutils.geom.point
 import aocutils.tolerance
 import aocutils.exceptions
-import aocutils.brep.base
-import aocutils.mesh
+# import aocutils.brep.base
+# import aocutils.mesh
 from aocutils.operations.boolean import common
 from aocutils.topology import Topo
 

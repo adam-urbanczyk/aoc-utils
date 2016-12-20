@@ -33,13 +33,13 @@ import OCC.ShapeBuild
 import OCC.BRepCheck
 
 import aocutils.exceptions
-import aocutils.brep.base
+from aocutils.brep.base import BaseObject
 import aocutils.brep.vertex_make
 
 logger = logging.getLogger(__name__)
 
 
-class Vertex(aocutils.brep.base.BaseObject):
+class Vertex(BaseObject):
     r"""Wraps OCC.gp.gp_Pnt
 
     Parameters

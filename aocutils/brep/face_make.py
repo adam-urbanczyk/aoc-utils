@@ -27,12 +27,12 @@ import OCC.GeomProjLib
 import OCC.Adaptor3d
 import OCC.gp
 
-import aocutils.brep.base
+# import aocutils.brep.base
 import aocutils.common
-import aocutils.brep.edge
+# import aocutils.brep.edge
 import aocutils.brep.wire_make
-import aocutils.topology
-import aocutils.exceptions
+# import aocutils.topology
+# import aocutils.exceptions
 
 logger = logging.getLogger(__name__)
 
